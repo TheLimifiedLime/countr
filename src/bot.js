@@ -96,6 +96,6 @@ client
   .on("shardReconnecting", () => console.log(shard, "Reconnecting."))
   .on("shardResume", (_, replayedEvents) => console.log(shard, `Resumed. ${replayedEvents} replayed events.`))
   .on("warn", info => console.log(shard, "Warning.", info))
-  .login(config.token);
+  .login(process.env.TOKEN);
 
 if (config.listKeys && Object.values(config.listKeys).length) BLAPI.handle(client, config.listKeys);
