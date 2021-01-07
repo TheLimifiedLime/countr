@@ -1,10 +1,14 @@
-const Discord = require("discord.js"), express = require("express"), config = require("../config.json");
+const Discord = require("discord.js"),
+  express = require("express"),
+  config = require("../config.json");
 
 const manager = new Discord.ShardingManager("./src/bot.js", {
-  token: process.env.TOKEN
+  token: process.env.TOKEN,
 });
 
-manager.on("shardCreate", shard => console.log(`Manager: Shard ${shard.id} is starting.`));
+manager.on("shardCreate", (shard) =>
+  console.log(`Manager: Shard ${shard.id} is starting.`)
+);
 
 let botInfo = {};
 
@@ -14,7 +18,9 @@ if (config.port) {
   setInterval(updateBotInfo, 30000);
 
   api.get("/", (_, response) => response.json(botInfo));
-  api.get("/newest", (_, response) => updateBotInfo().then(() => response.json(botInfo)));
+  api.get("/newest", (_, response) =>
+    updateBotInfo().then(() => response.json(botInfo))
+  );
   api.listen(config.port);
 }
 
@@ -24,20 +30,30 @@ async function updateBotInfo() {
     cachedUsers: 0,
     users: 0,
     shards: {},
-    lastUpdate: Date.now()
+    lastUpdate: Date.now(),
   };
 
   for (const shard of Array.from(manager.shards.values())) {
     const newShardInfo = {
       status: await shard.fetchClientValue("ws.status").catch(() => 6),
-      guilds: await shard.fetchClientValue("guilds.cache.size").catch(() => null),
-      cachedUsers: await shard.fetchClientValue("users.cache.size").catch(() => null),
-      users: await shard.fetchClientValue("guilds.cache").then(guilds => guilds.map(g => g.memberCount).reduce((a, b) => a + b)).catch(() => null)
+      guilds: await shard
+        .fetchClientValue("guilds.cache.size")
+        .catch(() => null),
+      cachedUsers: await shard
+        .fetchClientValue("users.cache.size")
+        .catch(() => null),
+      users: await shard
+        .fetchClientValue("guilds.cache")
+        .then((guilds) =>
+          guilds.map((g) => g.memberCount).reduce((a, b) => a + b)
+        )
+        .catch(() => null),
     };
 
     if (newShardInfo.guilds) newBotInfo.guilds += newShardInfo.guilds;
     if (newShardInfo.users) newBotInfo.users += newShardInfo.users;
-    if (newShardInfo.cachedUsers) newBotInfo.cachedUsers += newShardInfo.cachedUsers;
+    if (newShardInfo.cachedUsers)
+      newBotInfo.cachedUsers += newShardInfo.cachedUsers;
 
     newBotInfo.shards[`${shard.id}`] = newShardInfo;
   }
