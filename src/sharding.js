@@ -1,7 +1,7 @@
 const Discord = require("discord.js"), express = require("express"), config = require("../config.json");
 
 const manager = new Discord.ShardingManager("./src/bot.js", {
-  token: config.token
+  token: process.env.TOKEN
 });
 
 manager.on("shardCreate", shard => console.log(`Manager: Shard ${shard.id} is starting.`));

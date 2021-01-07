@@ -9,7 +9,7 @@ const
     messageCacheLifetime: 30,
     messageSweepInterval: 60,
     disableMentions: "everyone",
-    partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION" ],
+    partials: ["USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION"],
     presence: {
       status: "idle",
       activity: {
@@ -18,10 +18,26 @@ const
       }
     },
     ws: {
-      intents: [ "GUILDS", "GUILD_MESSAGES" ]
+      intents: ["GUILDS", "GUILD_MESSAGES"]
     }
   }),
   db = require("./database/index.js")(client);
+
+const fastify = require('fastify')({ logger: false })
+
+// Declare a route
+fastify.get('/', (request, reply) => {
+  reply.send(`What are you doing here?`)
+})
+
+// Run the server!
+fastify.listen(3000, '0.0.0.0', (err) => {
+  if (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+  fastify.log.info(`server listening on ${fastify.server.address().port}`)
+})
 
 let shard = "Shard N/A:", disabledGuilds = null;
 

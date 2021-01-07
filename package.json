@@ -7,8 +7,10 @@
     "blapi": "^2.0.1",
     "discord.js": "^12.4.1",
     "express": "^4.17.1",
+    "fastify": "^3.8.0",
     "mongoose": "^5.10.14",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "systeminformation": "^4.32.0"
   },
   "devDependencies": {},
   "scripts": {
